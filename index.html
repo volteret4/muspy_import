@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Importar a muspy</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1>Importar a muspy</h1>
+    <p class="lead">Sube tus exportaciones de Discogs o RateYourMusic, encuentra los artistas en MusicBrainz y síguelos en <a href="https://muspy.com" target="_blank" rel="noopener">muspy.com</a>. Todo ocurre en tu navegador: no se envía nada a ningún servidor propio.</p>
+  </header>
+
+  <section id="step-files">
+    <h2><span class="num">1</span> Sube tus CSV</h2>
+    <label id="drop" class="drop">
+      <input id="file" type="file" accept=".csv,text/csv" multiple hidden>
+      <strong>Arrastra aquí los archivos</strong> o haz clic para elegirlos
+      <small>Colección de Discogs (<code>…-collection-….csv</code>) o exportación de RYM (<code>…-music-export.csv</code>)</small>
+    </label>
+    <ul id="file-list" class="file-list"></ul>
+  </section>
+
+  <section id="step-resolve" hidden>
+    <h2><span class="num">2</span> Busca los artistas en MusicBrainz</h2>
+    <p class="hint">MusicBrainz permite una consulta por segundo, así que tarda aproximadamente un segundo por artista. Los resultados se guardan en este navegador para no repetir búsquedas.</p>
+    <div class="row">
+      <button id="btn-resolve" class="primary">Buscar artistas</button>
+      <button id="btn-stop" hidden>Detener</button>
+      <button id="btn-clear-cache" class="link">Borrar caché</button>
+    </div>
+    <div id="progress" class="progress" hidden><div class="bar"></div><span class="label"></span></div>
+  </section>
+
+  <section id="step-review" hidden>
+    <h2><span class="num">3</span> Revisa la lista</h2>
+    <div class="row toolbar">
+      <div class="filters" role="group" aria-label="Filtro">
+        <button data-filter="all" class="active">Todos <span></span></button>
+        <button data-filter="review">Revisar <span></span></button>
+        <button data-filter="none">Sin encontrar <span></span></button>
+      </div>
+      <input id="search" type="search" placeholder="Filtrar por nombre…">
+    </div>
+    <div class="table-wrap">
+      <table id="table">
+        <thead><tr><th><input type="checkbox" id="check-all" title="Marcar todos los visibles"></th><th>Artista en tu CSV</th><th>Discos</th><th>MusicBrainz</th><th>Confianza</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="step-send" hidden>
+    <h2><span class="num">4</span> Síguelos en muspy</h2>
+    <ol class="steps">
+      <li>Arrastra este marcador a la barra de marcadores (solo hace falta la primera vez): <a id="bookmarklet" class="bookmarklet" href="#">Seguir en muspy</a></li>
+      <li>Inicia sesión en <a href="https://muspy.com/signin" target="_blank" rel="noopener">muspy.com</a> si no lo has hecho ya.</li>
+      <li><a id="open-muspy" class="primary button" href="#" target="_blank" rel="noopener">Abrir muspy con <span id="sel-count">0</span> artistas</a> y, en esa pestaña, pulsa el marcador.</li>
+    </ol>
+    <details>
+      <summary>¿El enlace no funciona?</summary>
+      <p>Copia la lista, abre muspy.com, pulsa el marcador y pégala cuando te la pida.</p>
+      <button id="btn-copy">Copiar lista</button>
+    </details>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
