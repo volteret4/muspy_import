@@ -83,11 +83,11 @@ button.link { border: none; background: none; color: var(--muted); text-decorati
 button:disabled { opacity: 0.5; cursor: default; }
 
 .progress {
-  position: relative; margin-top: 14px; height: 26px;
+  position: relative; margin-top: 14px; min-height: 26px;
   border-radius: 6px; background: var(--bg); overflow: hidden; border: 1px solid var(--border);
 }
-.progress .bar { height: 100%; width: 0; background: var(--accent); opacity: 0.35; transition: width 0.3s; }
-.progress .label { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; }
+.progress .bar { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); opacity: 0.35; transition: width 0.3s; }
+.progress .label { position: relative; display: block; padding: 4px 10px; text-align: center; font-size: 13px; }
 
 .toolbar { justify-content: space-between; margin-bottom: 10px; }
 .filters { display: flex; gap: 4px; flex-wrap: wrap; }

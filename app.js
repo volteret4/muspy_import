@@ -190,7 +190,7 @@ async function resolveAll() {
   $('#step-review').hidden = false;
   render();
 
-  let done = 0;
+  let done = 0, failures = 0, fatal = '';
   const started = Date.now();
   while (done < todo.length && !stopRequested) {
     const a = todo[done];
@@ -199,17 +199,24 @@ async function resolveAll() {
       a.result = await resolve(a);
       storeResult(a);
     } catch (e) {
+      if (++failures >= 3) {
+        fatal = e instanceof TypeError
+          ? 'No se puede conectar con musicbrainz.org desde tu red. Abre https://musicbrainz.org en otra pestaña para comprobarlo, o prueba con otra conexión o una VPN.'
+          : e.message;
+        break;
+      }
       updateProgress(done, todo.length, started, e.message + ' — reintentando en 10 s');
       await sleep(10000);
       continue;
     }
+    failures = 0;
     done++;
     renderRow(a);
     updateCounts();
   }
-  updateProgress(done, todo.length, started, stopRequested ? 'Detenido' : 'Terminado');
+  updateProgress(done, todo.length, started, fatal || (stopRequested ? 'Detenido' : 'Terminado'));
   $('#btn-resolve').disabled = false;
-  $('#btn-resolve').textContent = stopRequested ? 'Continuar' : 'Buscar artistas';
+  $('#btn-resolve').textContent = stopRequested || fatal ? 'Continuar' : 'Buscar artistas';
   $('#btn-stop').hidden = true;
   updateSend();
 }
