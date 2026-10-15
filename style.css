@@ -105,7 +105,7 @@ table { border-collapse: collapse; width: 100%; font-size: 14px; }
 th, td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
 th { position: sticky; top: 0; background: var(--surface); z-index: 1; font-weight: 600; }
 td.n { color: var(--muted); text-align: right; }
-td .sub { color: var(--muted); font-size: 12px; }
+td .sub, .steps .sub { color: var(--muted); font-size: 12px; }
 tr.off td:not(:first-child) { opacity: 0.5; }
 .badge { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 12px; white-space: nowrap; }
 .badge.alta { background: var(--ok-bg); color: var(--ok); }
@@ -114,7 +114,8 @@ tr.off td:not(:first-child) { opacity: 0.5; }
 .badge.pendiente { color: var(--muted); }
 
 .steps { padding-left: 20px; margin: 0; }
-.steps li { margin-bottom: 12px; }
+.steps li { margin-bottom: 14px; }
+.steps .button { margin: 4px 0; }
 .bookmarklet {
   display: inline-block; padding: 4px 12px; border-radius: 99px;
   border: 1px dashed var(--accent); text-decoration: none; cursor: grab;
