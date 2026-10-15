@@ -122,3 +122,12 @@ tr.off td:not(:first-child) { opacity: 0.5; }
 }
 details { margin-top: 8px; color: var(--muted); }
 details p { margin: 8px 0; }
+
+.sources { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.sources article {
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-start;
+  border: 1px solid var(--border); border-radius: 10px; padding: 14px; background: var(--bg);
+}
+.sources h3 { margin: 0; font-size: 16px; }
+.sources p { margin: 0; color: var(--muted); font-size: 14px; flex: 1; }
+.sources .sub { flex: 0; font-size: 12px; }

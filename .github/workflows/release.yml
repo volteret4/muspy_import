@@ -1,0 +1,33 @@
+name: Publicar app de escritorio
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Instalar dependencias
+        run: pip install pyinstaller -r desktop/requirements.txt
+      - name: Compilar .exe
+        run: pyinstaller --onefile --windowed --name muspy_import desktop/muspy_import.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: muspy_import-windows
+          path: dist/muspy_import.exe
+      - name: Publicar release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/muspy_import.exe
+            desktop/muspy_import.py

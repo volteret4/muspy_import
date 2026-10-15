@@ -10,21 +10,51 @@
 <main>
   <header>
     <h1>Importar a muspy</h1>
-    <p class="lead">Sube tus exportaciones de Discogs o RateYourMusic, encuentra los artistas en MusicBrainz y síguelos en <a href="https://muspy.com" target="_blank" rel="noopener">muspy.com</a>. Todo ocurre en tu navegador: no se envía nada a ningún servidor propio.</p>
+    <p class="lead">Sube tus exportaciones de Discogs, RateYourMusic o de tu propia carpeta de música, encuentra los artistas en MusicBrainz y síguelos en <a href="https://muspy.com" target="_blank" rel="noopener">muspy.com</a>. Todo ocurre en tu navegador: no se envía nada a ningún servidor propio.</p>
   </header>
 
+  <section id="step-get">
+    <h2><span class="num">1</span> Obtén tus CSV</h2>
+    <div class="sources">
+      <article>
+        <h3>Discogs</h3>
+        <p>Exporta tu colección en CSV. Discogs prepara el archivo y lo deja listo para descargar en la misma página.</p>
+        <a class="button" href="https://www.discogs.com/users/export" target="_blank" rel="noopener">Exportar desde Discogs</a>
+      </article>
+      <article>
+        <h3>RateYourMusic</h3>
+        <p>Entra en tu perfil y, al final de la página, usa el enlace de exportación de tus datos (<code>…-music-export.csv</code>).</p>
+        <a class="button" href="https://rateyourmusic.com/" target="_blank" rel="noopener">Ir a RateYourMusic</a>
+      </article>
+      <article>
+        <h3>Tu carpeta de música</h3>
+        <p>La app de escritorio lee las etiquetas de tus archivos, busca los artistas en MusicBrainz y crea un CSV para subirlo aquí. Si tus archivos están etiquetados con Picard, usa directamente sus MBID.</p>
+        <div class="row">
+          <a class="button" href="https://github.com/volteret4/muspy_import/releases/latest/download/muspy_import.exe">Windows (.exe)</a>
+          <a class="button" href="https://github.com/volteret4/muspy_import/releases/latest/download/muspy_import.py">Linux (.py)</a>
+        </div>
+        <p class="sub">En Linux necesita Python 3 con Tkinter y <code>mutagen</code>.</p>
+      </article>
+      <article>
+        <h3>Last.fm</h3>
+        <p>No hace falta CSV: muspy tiene su propio importador de Last.fm. Escribe tu usuario y elige cuántos artistas importar.</p>
+        <a class="button" href="https://muspy.com/import" target="_blank" rel="noopener">Importar en muspy</a>
+      </article>
+    </div>
+  </section>
+
   <section id="step-files">
-    <h2><span class="num">1</span> Sube tus CSV</h2>
+    <h2><span class="num">2</span> Sube tus CSV</h2>
     <label id="drop" class="drop">
       <input id="file" type="file" accept=".csv,text/csv" multiple hidden>
       <strong>Arrastra aquí los archivos</strong> o haz clic para elegirlos
-      <small>Colección de Discogs (<code>…-collection-….csv</code>) o exportación de RYM (<code>…-music-export.csv</code>)</small>
+      <small>Colección de Discogs (<code>…-collection-….csv</code>), exportación de RYM (<code>…-music-export.csv</code>) o CSV de la app de escritorio. Puedes subir varios a la vez.</small>
     </label>
     <ul id="file-list" class="file-list"></ul>
   </section>
 
   <section id="step-resolve" hidden>
-    <h2><span class="num">2</span> Busca los artistas en MusicBrainz</h2>
+    <h2><span class="num">3</span> Busca los artistas en MusicBrainz</h2>
     <p class="hint">MusicBrainz permite una consulta por segundo, así que tarda aproximadamente un segundo por artista. Los resultados se guardan en este navegador para no repetir búsquedas.</p>
     <div class="row">
       <button id="btn-resolve" class="primary">Buscar artistas</button>
@@ -35,7 +65,7 @@
   </section>
 
   <section id="step-review" hidden>
-    <h2><span class="num">3</span> Revisa la lista</h2>
+    <h2><span class="num">4</span> Revisa la lista</h2>
     <div class="row toolbar">
       <div class="filters" role="group" aria-label="Filtro">
         <button data-filter="all" class="active">Todos <span></span></button>
@@ -53,7 +83,7 @@
   </section>
 
   <section id="step-send" hidden>
-    <h2><span class="num">4</span> Síguelos en muspy</h2>
+    <h2><span class="num">5</span> Síguelos en muspy</h2>
     <p class="hint">muspy no permite que otra web añada artistas por ti. Lo hace un marcador que tú pulsas estando dentro de muspy, con tu sesión iniciada.</p>
     <ol class="steps">
       <li><b>Instala el marcador</b> (solo la primera vez): arrastra este botón a la barra de marcadores del navegador. <a id="bookmarklet" class="bookmarklet" href="#">Seguir en muspy</a></li>

@@ -63,7 +63,20 @@ function detectFormat(rows) {
   const cols = rows.length ? Object.keys(rows[0]) : [];
   if (cols.includes('release_id') && cols.includes('Artist')) return 'discogs';
   if (cols.includes('RYM Album') && cols.includes('Last Name')) return 'rym';
+  if (cols.includes('artist') && cols.includes('mbid')) return 'app';
   return null;
+}
+
+const FORMAT_NAMES = { discogs: 'Discogs', rym: 'RateYourMusic', app: 'App de escritorio' };
+const MBID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
+
+// CSV de la app de escritorio: artist, mbid (varios separados por ";"), albums ("a | b"), source_name.
+function presetFromApp(r) {
+  const ids = (r.mbid.match(MBID_RE) || []).map(id => id.toLowerCase());
+  if (!ids.length) return null;
+  const parts = r.artist.split(' + ');
+  const names = parts.length === ids.length ? parts : ids.map(() => r.artist);
+  return { confidence: 'alta', options: [{ ids, names, label: r.artist, desc: 'elegido en la app' }], choice: 0, checked: true };
 }
 
 // RYM exporta algunos textos con entidades HTML ("&amp;").
@@ -80,6 +93,12 @@ function extract(rows, format) {
   for (const raw of rows) {
     const r = Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, decodeEntities(v)]));
     let name, title;
+    if (format === 'app') {
+      name = r.source_name || r.artist;
+      const titles = r.albums ? r.albums.split(' | ') : [];
+      if (name) out.push({ name, title: titles[0], titles, preset: presetFromApp(r) });
+      continue;
+    }
     if (format === 'discogs') {
       // Discogs añade "(2)" para desambiguar y "*" para variantes del nombre.
       name = r.Artist.replace(/\s\(\d+\)/g, '').replace(/\*(?=\s|,|$)/g, '').trim();
@@ -95,14 +114,15 @@ function extract(rows, format) {
 }
 
 function addEntries(entries, source) {
-  for (const { name, title } of entries) {
+  for (const { name, title, titles, preset } of entries) {
     const key = norm(name) || name.toLowerCase();
     let a = artists.get(key);
     if (!a) {
       a = { key, name, albums: [], sources: new Set(), result: null };
       artists.set(key, a);
     }
-    if (title && !a.albums.includes(title)) a.albums.push(title);
+    for (const t of titles || [title]) if (t && !a.albums.includes(t)) a.albums.push(t);
+    if (preset) a.preset = preset;
     a.sources.add(source);
   }
 }
@@ -407,13 +427,16 @@ async function handleFiles(files) {
       if (!format) throw new Error('formato no reconocido');
       const entries = extract(rows, format);
       addEntries(entries, format);
-      li.innerHTML = `<b>${esc(file.name)}</b> · ${format === 'discogs' ? 'Discogs' : 'RateYourMusic'} · ${rows.length} discos`;
+      li.innerHTML = `<b>${esc(file.name)}</b> · ${FORMAT_NAMES[format]} · ${rows.length} ${format === 'app' ? 'artistas' : 'discos'}`;
     } catch (e) {
       li.innerHTML = `<b>${esc(file.name)}</b> · error: ${esc(e.message)}`;
     }
     $('#file-list').appendChild(li);
   }
-  for (const a of artists.values()) if (!a.result && cache[a.key]) a.result = cache[a.key];
+  for (const a of artists.values()) {
+    if (a.preset) { a.result = a.preset; delete a.preset; }
+    else if (!a.result && cache[a.key]) a.result = cache[a.key];
+  }
   const pending = [...artists.values()].filter(a => !a.result).length;
   const li = document.createElement('li');
   li.textContent = `${artists.size} artistas distintos en total` + (pending < artists.size ? ` (${artists.size - pending} ya buscados antes)` : '') + '.';
